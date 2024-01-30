@@ -4,6 +4,7 @@ import pandas as pd
 import time
 from selenium.common.exceptions import NoSuchElementException
 import requests
+from selenium.webdriver.common.by import By
 
 # Load the URLs from the CSV file
 url_df = pd.read_csv("attraction_urls.csv")
@@ -12,31 +13,31 @@ url_df = pd.read_csv("attraction_urls.csv")
 driver = webdriver.Chrome("C:/Users/makan/OneDrive/Desktop/chromedriver-win64/chromedriver.exe")
 
 
-# def scrape_reviews(driver, max_reviews=100):
-#     reviews = []
-#     while len(reviews) < max_reviews:
-#         try:
-#             # Get the HTML content after dynamic rendering
-#             html_content = driver.page_source
-#             # Parse the HTML content
-#             soup = BeautifulSoup(html_content, 'html.parser')
-#
-#             # Extract reviews from the current page
-#             reviews_list_div = soup.find("div", class_="LbPSX")
-#             if reviews_list_div:
-#                 reviews_list = reviews_list_div.find_all("span", class_="yCeTE")
-#                 reviews.extend([review.text.strip() for review in reviews_list])
-#
-#             # Check for the next page button
-#             next_button = driver.find_element(By.CSS_SELECTOR, 'a[aria-label="Next page"]')
-#             driver.execute_script("arguments[0].click();", next_button)
-#             time.sleep(5)  # Additional sleep for safety
-#
-#         except NoSuchElementException:
-#             # No more "Next page" button, break out of the loop
-#             break
-#
-#     return reviews[:max_reviews]
+def scrape_reviews(driver, max_reviews=100):
+    reviews = []
+    while len(reviews) < max_reviews:
+        try:
+            # Get the HTML content after dynamic rendering
+            html_content = driver.page_source
+            # Parse the HTML content
+            soup = BeautifulSoup(html_content, 'html.parser')
+
+            # Extract reviews from the current page
+            reviews_list_div = soup.find("div", class_="LbPSX")
+            if reviews_list_div:
+                reviews_list = reviews_list_div.find_all("span", class_="yCeTE")
+                reviews.extend([review.text.strip() for review in reviews_list])
+
+            # Check for the next page button
+            next_button = driver.find_element(By.CSS_SELECTOR, 'a[aria-label="Next page"]')
+            driver.execute_script("arguments[0].click();", next_button)
+            time.sleep(5)  # Additional sleep for safety
+
+        except NoSuchElementException:
+            # No more "Next page" button, break out of the loop
+            break
+
+    return reviews[:max_reviews]
 
 
 # Function to scrape detailed information for each attraction place
@@ -91,8 +92,8 @@ def scrape_attraction_details(website_url):
     attraction_place_details["About"] = about_span.text.strip() if about_span else None
 
     # Reviews List
-    # reviews_list = scrape_reviews(driver, 100)
-    # attraction_details["Reviews List"] = reviews_list
+    reviews_list = scrape_reviews(driver, 100)
+    attraction_details["Reviews List"] = reviews_list
     return attraction_place_details
 
 
