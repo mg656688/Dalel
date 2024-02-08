@@ -10,7 +10,7 @@ from selenium.webdriver.common.by import By
 url_df = pd.read_csv("attraction_urls.csv")
 
 # Set up the webdriver (make sure to have the appropriate webdriver for your browser installed)
-driver = webdriver.Chrome("C:/Users/makan/OneDrive/Desktop/chromedriver-win64/chromedriver.exe")
+driver = webdriver.Chrome("chromedriver-win64")
 
 
 def scrape_reviews(driver, max_reviews=100):
