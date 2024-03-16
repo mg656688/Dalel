@@ -1,4 +1,3 @@
-from selenium import webdriver
 from bs4 import BeautifulSoup
 import pandas as pd
 import time
@@ -6,11 +5,13 @@ from selenium.common.exceptions import NoSuchElementException
 import requests
 from selenium.webdriver.common.by import By
 
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+
 # Load the URLs from the CSV file
 url_df = pd.read_csv("attraction_urls.csv")
 
-# Set up the webdriver (make sure to have the appropriate webdriver for your browser installed)
-driver = webdriver.Chrome("chromedriver-win64")
+driver = webdriver.Chrome(ChromeDriverManager().install())
 
 
 def scrape_reviews(driver, max_reviews=100):
@@ -83,6 +84,7 @@ def scrape_attraction_details(website_url):
         span_element = child_div.find_element_by_tag_name("span")
         # Extract the text content if the span element is found
         attraction_place_details["Address"] = span_element.text.strip() if span_element else None
+
     except NoSuchElementException:
         # Handle case where address element is not found
         attraction_place_details["Address"] = None
